@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ResQ Notes - Infusion Rate Calculator</title>
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --accent-color: #0369a1;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --border-color: #cbd5e1;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--primary-color);
+      display: flex;
+      justify-content: center;
+      padding: 2rem 1rem;
+      margin: 0;
+    }
+
+    .calculator-container {
+      background: var(--card-bg);
+      max-width: 450px;
+      width: 100%;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    h1 {
+      margin-top: 0;
+      margin-bottom: 0.25rem;
+      text-align: center;
+      color: var(--accent-color);
+      font-size: 1.8rem;
+      letter-spacing: 0.5px;
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      color: var(--primary-color);
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
+
+    .formula-box {
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-color);
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    .input-group {
+      margin-bottom: 1.25rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .combined-input {
+      display: flex;
+      gap: 10px;
+    }
+
+    input[type="number"], select {
+      padding: 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      flex: 1;
+    }
+
+    select {
+      background-color: white;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    input[type="number"]:focus, select:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(3, 105, 161, 0.1);
+    }
+
+    .result-box {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background-color: #e0f2fe;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid #bae6fd;
+    }
+
+    .result-label {
+      font-size: 0.9rem;
+      color: #0369a1;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .result-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #0c4a6e;
+      margin: 0.5rem 0;
+    }
+
+    .result-unit {
+      font-size: 1.2rem;
+      color: #0369a1;
+    }
+    
+    .calculation-note {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 5px;
+      display: block;
+    }
+    
+    .credits {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+    
+    .credits p {
+      margin: 0 0 0.5rem 0;
+    }
+    
+    .credits a {
+      color: var(--accent-color);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    .credits a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="calculator-container">
+    <h1>ResQ Notes</h1>
+    <h2>Infusion Rate Calculator</h2>
+    
+    <div class="formula-box">
+      <strong>mL/h = </strong>
+      <span style="display: inline-block; vertical-align: middle; text-align: center;">
+        <span style="border-bottom: 1px solid #000; display: block; padding-bottom: 3px;">
+          Dose &times; Weight &times; 60
+        </span>
+        <span style="display: block; padding-top: 3px;">
+          Concentration (mcg/mL)
+        </span>
+      </span>
+    </div>
+
+    <form id="infusionForm">
+      <div class="input-group">
+        <label for="dose">Dose (mcg/kg/min)</label>
+        <input type="number" id="dose" step="any" min="0" placeholder="e.g., 0.1" required>
+      </div>
+
+      <div class="input-group">
+        <label for="weight">Patient Weight (kg)</label>
+        <input type="number" id="weight" step="any" min="0" placeholder="e.g., 70" required>
+      </div>
+
+      <div class="input-group">
+        <label for="drugAmount">Total Drug in 50 mL Syringe</label>
+        <div class="combined-input">
+          <input type="number" id="drugAmount" step="any" min="0" placeholder="e.g., 250" required>
+          <select id="drugUnit">
+            <option value="mg">mg</option>
+            <option value="mcg">mcg</option>
+          </select>
+        </div>
+        <span class="calculation-note" id="calcNote">Concentration: 0 mcg/mL</span>
+      </div>
+    </form>
+
+    <div class="result-box">
+      <div class="result-label">Infusion Rate</div>
+      <div class="result-value" id="result">0.0</div>
+      <div class="result-unit">mL/h</div>
+    </div>
+    
+    <div class="credits">
+      <p>Developed by <strong>Dr Mirza Shamim</strong></p>
+      <p><a href="https://www.facebook.com/share/g/1BM39ZVmft/?mibextid=wwXIfr" target="_blank">Join Facebook Group</a></p>
+    </div>
+  </div>
+
+  <script>
+    // Get input elements
+    const doseInput = document.getElementById('dose');
+    const weightInput = document.getElementById('weight');
+    const drugAmountInput = document.getElementById('drugAmount');
+    const drugUnitSelect = document.getElementById('drugUnit');
+    const resultDisplay = document.getElementById('result');
+    const calcNoteDisplay = document.getElementById('calcNote');
+
+    // Calculation function
+    function calculateRate() {
+      const dose = parseFloat(doseInput.value);
+      const weight = parseFloat(weightInput.value);
+      const drugAmount = parseFloat(drugAmountInput.value);
+      const drugUnit = drugUnitSelect.value;
+      const volume = 50; // Fixed volume for syringe pump
+
+      // Check if amount is valid to calculate intermediate concentration
+      if (!isNaN(drugAmount) && drugAmount > 0) {
+        let concentrationMcgPerMl = 0;
+        
+        // Convert total amount to mcg if necessary, then divide by 50 mL
+        if (drugUnit === 'mg') {
+          concentrationMcgPerMl = (drugAmount * 1000) / volume;
+        } else {
+          // It's already in mcg
+          concentrationMcgPerMl = drugAmount / volume;
+        }
+        
+        // Render Concentration label with up to 2 fraction digits
+        calcNoteDisplay.textContent = `Concentration: ${concentrationMcgPerMl.toLocaleString(undefined, {maximumFractionDigits: 2})} mcg/mL`;
+
+        // Check if all inputs are ready for the final calculation
+        if (!isNaN(dose) && !isNaN(weight)) {
+          // The formula: (Dose * Weight * 60) / Concentration (mcg/mL)
+          const rate = (dose * weight * 60) / concentrationMcgPerMl;
+          
+          // Render safely up to 1 decimal point or keep '0.0' if rate ends up invalid
+          resultDisplay.textContent = isFinite(rate) ? rate.toFixed(1) : "0.0";
+        } else {
+          resultDisplay.textContent = "0.0";
+        }
+
+      } else {
+        calcNoteDisplay.textContent = "Concentration: 0 mcg/mL";
+        resultDisplay.textContent = "0.0";
+      }
+    }
+
+    // Add event listeners to calculate automatically on typing and selection adjustments
+    doseInput.addEventListener('input', calculateRate);
+    weightInput.addEventListener('input', calculateRate);
+    drugAmountInput.addEventListener('input', calculateRate);
+    drugUnitSelect.addEventListener('change', calculateRate);
+  </script>
+
+</body>
+</html>
