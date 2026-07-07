@@ -169,10 +169,10 @@
     <h1>ResQ Notes</h1>
     <h2>Infusion Rate Calculator</h2>
     
-    <div class="formula-box">
+    <div class="formula-box" id="formulaBox">
       <strong>mL/h = </strong>
       <span style="display: inline-block; vertical-align: middle; text-align: center;">
-        <span style="border-bottom: 1px solid #000; display: block; padding-bottom: 3px;">
+        <span style="border-bottom: 1px solid #000; display: block; padding-bottom: 3px;" id="formulaNumerator">
           Dose &times; Weight &times; 60
         </span>
         <span style="display: block; padding-top: 3px;">
@@ -181,10 +181,16 @@
       </span>
     </div>
 
-    <form id="infusionForm">
+    <form id="infusionForm" onsubmit="event.preventDefault();">
       <div class="input-group">
-        <label for="dose">Dose (mcg/kg/min)</label>
-        <input type="number" id="dose" step="any" min="0" placeholder="e.g., 0.1" required>
+        <label for="dose">Dose</label>
+        <div class="combined-input">
+          <input type="number" id="dose" step="any" min="0" placeholder="e.g., 0.1" required>
+          <select id="doseUnit">
+            <option value="min">mcg/kg/min</option>
+            <option value="hr">mcg/kg/hr</option>
+          </select>
+        </div>
       </div>
 
       <div class="input-group">
@@ -220,58 +226,23 @@
   <script>
     // Get input elements
     const doseInput = document.getElementById('dose');
+    const doseUnitSelect = document.getElementById('doseUnit');
     const weightInput = document.getElementById('weight');
     const drugAmountInput = document.getElementById('drugAmount');
     const drugUnitSelect = document.getElementById('drugUnit');
     const resultDisplay = document.getElementById('result');
     const calcNoteDisplay = document.getElementById('calcNote');
+    const formulaNumerator = document.getElementById('formulaNumerator');
 
     // Calculation function
     function calculateRate() {
       const dose = parseFloat(doseInput.value);
+      const doseUnit = doseUnitSelect.value;
       const weight = parseFloat(weightInput.value);
       const drugAmount = parseFloat(drugAmountInput.value);
       const drugUnit = drugUnitSelect.value;
       const volume = 50; // Fixed volume for syringe pump
 
-      // Check if amount is valid to calculate intermediate concentration
-      if (!isNaN(drugAmount) && drugAmount > 0) {
-        let concentrationMcgPerMl = 0;
-        
-        // Convert total amount to mcg if necessary, then divide by 50 mL
-        if (drugUnit === 'mg') {
-          concentrationMcgPerMl = (drugAmount * 1000) / volume;
-        } else {
-          // It's already in mcg
-          concentrationMcgPerMl = drugAmount / volume;
-        }
-        
-        // Render Concentration label with up to 2 fraction digits
-        calcNoteDisplay.textContent = `Concentration: ${concentrationMcgPerMl.toLocaleString(undefined, {maximumFractionDigits: 2})} mcg/mL`;
-
-        // Check if all inputs are ready for the final calculation
-        if (!isNaN(dose) && !isNaN(weight)) {
-          // The formula: (Dose * Weight * 60) / Concentration (mcg/mL)
-          const rate = (dose * weight * 60) / concentrationMcgPerMl;
-          
-          // Render safely up to 1 decimal point or keep '0.0' if rate ends up invalid
-          resultDisplay.textContent = isFinite(rate) ? rate.toFixed(1) : "0.0";
-        } else {
-          resultDisplay.textContent = "0.0";
-        }
-
-      } else {
-        calcNoteDisplay.textContent = "Concentration: 0 mcg/mL";
-        resultDisplay.textContent = "0.0";
-      }
-    }
-
-    // Add event listeners to calculate automatically on typing and selection adjustments
-    doseInput.addEventListener('input', calculateRate);
-    weightInput.addEventListener('input', calculateRate);
-    drugAmountInput.addEventListener('input', calculateRate);
-    drugUnitSelect.addEventListener('change', calculateRate);
-  </script>
-
-</body>
-</html>
+      // Update the visual formula box based on unit selected
+      if (doseUnit === 'hr') {
+        formulaNumerator.innerHTML = 'Dose
