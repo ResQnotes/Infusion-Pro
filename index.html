@@ -1,248 +1,316 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ResQ Notes - Infusion Rate Calculator</title>
-  <style>
-    :root {
-      --primary-color: #2c3e50;
-      --accent-color: #0369a1;
-      --bg-color: #f8fafc;
-      --card-bg: #ffffff;
-      --border-color: #cbd5e1;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResQ Notes - Infusion Rate Calculator</title>
+    <style>
+        :root {
+            --primary-color: #005b96;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --accent-blue: #e3f2fd;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --border-color: #dcdcdc;
+        }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--primary-color);
-      display: flex;
-      justify-content: center;
-      padding: 2rem 1rem;
-      margin: 0;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
 
-    .calculator-container {
-      background: var(--card-bg);
-      max-width: 450px;
-      width: 100%;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    }
-    
-    h1 {
-      margin-top: 0;
-      margin-bottom: 0.25rem;
-      text-align: center;
-      color: var(--accent-color);
-      font-size: 1.8rem;
-      letter-spacing: 0.5px;
-    }
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-    h2 {
-      margin-top: 0;
-      margin-bottom: 1.5rem;
-      text-align: center;
-      color: var(--primary-color);
-      font-size: 1.2rem;
-      font-weight: 500;
-    }
+        .calculator-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 420px;
+            padding: 30px 24px;
+        }
 
-    .formula-box {
-      border: 1px solid var(--border-color);
-      background-color: var(--bg-color);
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 8px;
-      text-align: center;
-      font-size: 0.95rem;
-    }
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
 
-    .input-group {
-      margin-bottom: 1.25rem;
-    }
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
 
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
+        .header p {
+            color: var(--text-muted);
+            font-size: 16px;
+            font-weight: 500;
+        }
 
-    .combined-input {
-      display: flex;
-      gap: 10px;
-    }
+        .formula-box {
+            background-color: var(--bg-color);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+            color: #1e293b;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
 
-    input[type="number"], select {
-      padding: 0.75rem;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      box-sizing: border-box;
-      font-size: 1rem;
-      transition: border-color 0.2s;
-    }
+        .input-group {
+            margin-bottom: 18px;
+        }
 
-    input[type="number"] {
-      width: 100%;
-      flex: 1;
-    }
+        .input-group label {
+            display: block;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
 
-    select {
-      background-color: white;
-      cursor: pointer;
-      font-weight: 600;
-      color: var(--primary-color);
-    }
+        .field-container {
+            display: flex;
+            gap: 8px;
+        }
 
-    input[type="number"]:focus, select:focus {
-      outline: none;
-      border-color: var(--accent-color);
-      box-shadow: 0 0 0 3px rgba(3, 105, 161, 0.1);
-    }
+        input[type="number"] {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            color: var(--text-main);
+            background-color: #fff;
+        }
 
-    .result-box {
-      margin-top: 2rem;
-      padding: 1.5rem;
-      background-color: #e0f2fe;
-      border-radius: 8px;
-      text-align: center;
-      border: 1px solid #bae6fd;
-    }
+        select {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+            background-color: #fff;
+            cursor: pointer;
+            outline: none;
+        }
 
-    .result-label {
-      font-size: 0.9rem;
-      color: #0369a1;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+        .hint-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-weight: 500;
+        }
 
-    .result-value {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #0c4a6e;
-      margin: 0.5rem 0;
-    }
+        .result-box {
+            background-color: var(--accent-blue);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 24px;
+            margin-bottom: 24px;
+        }
 
-    .result-unit {
-      font-size: 1.2rem;
-      color: #0369a1;
-    }
-    
-    .calculation-note {
-      font-size: 0.8rem;
-      color: #64748b;
-      margin-top: 5px;
-      display: block;
-    }
-    
-    .credits {
-      margin-top: 2rem;
-      padding-top: 1rem;
-      border-top: 1px solid var(--border-color);
-      text-align: center;
-      font-size: 0.85rem;
-      color: #64748b;
-    }
-    
-    .credits p {
-      margin: 0 0 0.5rem 0;
-    }
-    
-    .credits a {
-      color: var(--accent-color);
-      text-decoration: none;
-      font-weight: 600;
-    }
-    
-    .credits a:hover {
-      text-decoration: underline;
-    }
-  </style>
+        .result-box .title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary-color);
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .result-box .value {
+            font-size: 38px;
+            font-weight: 800;
+            color: var(--primary-color);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .result-box .unit {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .footer {
+            text-align: center;
+            border-top: 1px solid #eeeeee;
+            padding-top: 16px;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .footer strong {
+            color: #4a5568;
+        }
+
+        .footer a {
+            display: inline-block;
+            margin-top: 6px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
 
-  <div class="calculator-container">
-    <h1>ResQ Notes</h1>
-    <h2>Infusion Rate Calculator</h2>
-    
-    <div class="formula-box" id="formulaBox">
-      <strong>mL/h = </strong>
-      <span style="display: inline-block; vertical-align: middle; text-align: center;">
-        <span style="border-bottom: 1px solid #000; display: block; padding-bottom: 3px;" id="formulaNumerator">
-          Dose &times; Weight &times; 60
-        </span>
-        <span style="display: block; padding-top: 3px;">
-          Concentration (mcg/mL)
-        </span>
-      </span>
+<div class="calculator-card">
+    <div class="header">
+        <h1>ResQ Notes</h1>
+        <p>Infusion Rate Calculator</p>
     </div>
 
-    <form id="infusionForm" onsubmit="event.preventDefault();">
-      <div class="input-group">
-        <label for="dose">Dose</label>
-        <div class="combined-input">
-          <input type="number" id="dose" step="any" min="0" placeholder="e.g., 0.1" required>
-          <select id="doseUnit">
-            <option value="min">mcg/kg/min</option>
-            <option value="hr">mcg/kg/hr</option>
-          </select>
-        </div>
-      </div>
+    <div class="formula-box" id="formulaDisplay">
+        mL/h = (Dose × Weight × 60) / Concentration (mcg/mL)
+    </div>
 
-      <div class="input-group">
-        <label for="weight">Patient Weight (kg)</label>
-        <input type="number" id="weight" step="any" min="0" placeholder="e.g., 70" required>
-      </div>
+    <div class="input-group">
+        <label>Calculate For</label>
+        <select id="calcDirection" style="width: 100%;" onchange="toggleDirection()">
+            <option value="doseToRate">Dose → Infusion Rate (mL/h)</option>
+            <option value="rateToDose">Infusion Rate (mL/h) → Dose</option>
+        </select>
+    </div>
 
-      <div class="input-group">
-        <label for="drugAmount">Total Drug in 50 mL Syringe</label>
-        <div class="combined-input">
-          <input type="number" id="drugAmount" step="any" min="0" placeholder="e.g., 250" required>
-          <select id="drugUnit">
-            <option value="mg">mg</option>
-            <option value="mcg">mcg</option>
-          </select>
+    <div class="input-group">
+        <label id="input1Label">Dose</label>
+        <div class="field-container">
+            <input type="number" id="inputVal1" placeholder="e.g., 0.1" step="any" oninput="calculate()">
+            <select id="doseUnit" onchange="updateUnits()">
+                <option value="mcg/kg/min">mcg/kg/min</option>
+                <option value="mcg/kg/h">mcg/kg/h</option>
+            </select>
         </div>
-        <span class="calculation-note" id="calcNote">Concentration: 0 mcg/mL</span>
-      </div>
-    </form>
+    </div>
+
+    <div class="input-group">
+        <label>Patient Weight (kg)</label>
+        <input type="number" id="weight" placeholder="e.g., 70" step="any" oninput="calculate()" style="width: 100%;">
+    </div>
+
+    <div class="input-group">
+        <label>Total Drug in 50 mL Syringe</label>
+        <div class="field-container">
+            <input type="number" id="totalDrug" placeholder="e.g., 250" step="any" oninput="calculate()">
+            <select id="drugUnit" onchange="calculate()">
+                <option value="mg">mg</option>
+                <option value="mcg">mcg</option>
+            </select>
+        </div>
+        <div class="hint-text" id="concentrationDisplay">Concentration: 0 mcg/mL</div>
+    </div>
 
     <div class="result-box">
-      <div class="result-label">Infusion Rate</div>
-      <div class="result-value" id="result">0.0</div>
-      <div class="result-unit">mL/h</div>
+        <div class="title" id="resultTitle">Infusion Rate</div>
+        <div class="value" id="resultValue">0.0</div>
+        <div class="unit" id="resultUnit">mL/h</div>
     </div>
-    
-    <div class="credits">
-      <p>Developed by <strong>Dr Mirza Shamim</strong></p>
-      <p><a href="https://www.facebook.com/share/g/1BM39ZVmft/?mibextid=wwXIfr" target="_blank">Join Facebook Group</a></p>
+
+    <div class="footer">
+        Developed by <strong>Dr. Mirza Shamim</strong><br>
+        <a href="https://www.facebook.com/share/g/1BsXnPRfhZ/?mibextid=wwXIfr" target="_blank">Join Facebook Group</a>
     </div>
-  </div>
+</div>
 
-  <script>
-    // Get input elements
-    const doseInput = document.getElementById('dose');
-    const doseUnitSelect = document.getElementById('doseUnit');
-    const weightInput = document.getElementById('weight');
-    const drugAmountInput = document.getElementById('drugAmount');
-    const drugUnitSelect = document.getElementById('drugUnit');
-    const resultDisplay = document.getElementById('result');
-    const calcNoteDisplay = document.getElementById('calcNote');
-    const formulaNumerator = document.getElementById('formulaNumerator');
+<script>
+    function toggleDirection() {
+        const direction = document.getElementById('calcDirection').value;
+        const input1Label = document.getElementById('input1Label');
+        const doseUnitSelect = document.getElementById('doseUnit');
+        const inputVal1 = document.getElementById('inputVal1');
+        const resultTitle = document.getElementById('resultTitle');
+        const resultUnit = document.getElementById('resultUnit');
 
-    // Calculation function
-    function calculateRate() {
-      const dose = parseFloat(doseInput.value);
-      const doseUnit = doseUnitSelect.value;
-      const weight = parseFloat(weightInput.value);
-      const drugAmount = parseFloat(drugAmountInput.value);
-      const drugUnit = drugUnitSelect.value;
-      const volume = 50; // Fixed volume for syringe pump
+        if (direction === 'doseToRate') {
+            input1Label.textContent = 'Dose';
+            doseUnitSelect.style.display = 'block';
+            inputVal1.placeholder = 'e.g., 0.1';
+            resultTitle.textContent = 'Infusion Rate';
+            resultUnit.textContent = 'mL/h';
+        } else {
+            input1Label.textContent = 'Infusion Rate (mL/h)';
+            doseUnitSelect.style.display = 'none';
+            inputVal1.placeholder = 'e.g., 5.0';
+            resultTitle.textContent = 'Calculated Dose';
+            resultUnit.textContent = doseUnitSelect.value;
+        }
+        updateUnits();
+        calculate();
+    }
 
-      // Update the visual formula box based on unit selected
-      if (doseUnit === 'hr') {
-        formulaNumerator.innerHTML = 'Dose
+    function updateUnits() {
+        const direction = document.getElementById('calcDirection').value;
+        const doseUnit = document.getElementById('doseUnit').value;
+        const formulaDisplay = document.getElementById('formulaDisplay');
+        const resultUnit = document.getElementById('resultUnit');
+
+        if (direction === 'doseToRate') {
+            if (doseUnit === 'mcg/kg/min') {
+                formulaDisplay.textContent = 'mL/h = (Dose × Weight × 60) / Concentration (mcg/mL)';
+            } else {
+                formulaDisplay.textContent = 'mL/h = (Dose × Weight) / Concentration (mcg/mL)';
+            }
+        } else {
+            resultUnit.textContent = doseUnit;
+            if (doseUnit === 'mcg/kg/min') {
+                formulaDisplay.textContent = 'Dose (mcg/kg/min) = (mL/h × Concentration) / (Weight × 60)';
+            } else {
+                formulaDisplay.textContent = 'Dose (mcg/kg/h) = (mL/h × Concentration) / Weight';
+            }
+        }
+        calculate();
+    }
+
+    function calculate() {
+        const direction = document.getElementById('calcDirection').value;
+        const inputVal1 = parseFloat(document.getElementById('inputVal1').value) || 0;
+        const weight = parseFloat(document.getElementById('weight').value) || 0;
+        const totalDrug = parseFloat(document.getElementById('totalDrug').value) || 0;
+        const drugUnit = document.getElementById('drugUnit').value;
+        const doseUnit = document.getElementById('doseUnit').value;
+        const syringeVol = 50; 
+        
+        let totalDrugMcg = drugUnit === 'mg' ? totalDrug * 1000 : totalDrug;
+        let concentration = totalDrug > 0 ? (totalDrugMcg / syringeVol) : 0;
+        
+        document.getElementById('concentrationDisplay').textContent = `Concentration: ${concentration.toFixed(1)} mcg/mL`;
+        const resultValueEl = document.getElementById('resultValue');
+
+        if (weight <= 0 || concentration <= 0 || inputVal1 <= 0) {
+            resultValueEl.textContent = '0.0';
+            return;
+        }
+
+        if (direction === 'doseToRate') {
+            const timeMultiplier = doseUnit === 'mcg/kg/min' ? 60 : 1;
+            let mlPerHour = (inputVal1 * weight * timeMultiplier) / concentration;
+            resultValueEl.textContent = mlPerHour.toFixed(1);
+        } else {
+            let dosePerHour = (inputVal1 * concentration) / weight;
+            let finalDose = doseUnit === 'mcg/kg/min' ? (dosePerHour / 60) : dosePerHour;
+            resultValueEl.textContent = finalDose < 0.1 ? finalDose.toFixed(3) : finalDose.toFixed(2);
+        }
+    }
+</script>
+
+</body>
+</html>
